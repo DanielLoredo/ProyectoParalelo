@@ -2,7 +2,7 @@
 -import(timer, [now_diff/2]).
 -export([runSequencial/0, setup/1]).
 -export([runParallel/0, parallelHelper/1]).
-
+-export([run/0]).
 
 realizaCalculo(SOut, A, Calc, B) -> case Calc of
             "*" -> io:format(SOut, "~s~n", [integer_to_list(A*B)]);
@@ -35,28 +35,29 @@ setup(File) ->
     leeArchivo(SIn, SOut).
 
 runSequencial() -> 
-    T1 = time(),
+    T1 = erlang:timestamp(),
     setup("case1"),
     setup("case2"),
     setup("case3"),
     setup("case4"),
-    T2 = time(),
+    T2 = erlang:timestamp(),
     Dif = now_diff(T2, T1),
-    io:format("Inicio de Ejecucion: ~p~n", [T1]),
-    io:format("Fin de Ejecucion: ~p~n", [T2]),
-    io:format("Tiempo de Ejecucion: ~p~n", [Dif]).
+    io:format("Tiempo de ejecucion: ~p~n~n", [Dif]).
 
 parallelHelper(File) ->
-    T1 = time(),
+    T1 = erlang:timestamp(),
     setup(File),
-    T2 = time(),
+    T2 = erlang:timestamp(),
     Dif = now_diff(T2, T1),
-    io:format("Inicio de Ejecucion: ~p~n", [T1]),
-    io:format("Fin de Ejecucion: ~p~n", [T2]),
-    io:format("Tiempo de Ejecucion: ~p~n", [Dif]).
+    io:format(" ~p~n", [Dif]).
 
 runParallel() ->
     spawn(act5_3, parallelHelper, ["case1"]),
     spawn(act5_3, parallelHelper, ["case2"]),
     spawn(act5_3, parallelHelper, ["case3"]),
     spawn(act5_3, parallelHelper, ["case4"]).
+run() ->
+    io:format("-------Sequencial--------~n"),
+    runSequencial(),
+    io:format("-------Parallel--------~n Tiempo de ejecucion: "),
+    runParallel().
